@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Dynamic Site</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+</head>
+<body>
+  <h1>Welcome to My Site</h1>
+  <!-- Map placeholder -->
+  <div id="map" style="width: 100%; height: 400px;"></div>
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+  </script>
+
+  <!-- Live webcam embed (Times Square EarthCam) -->
+  <h2>Live Webcam</h2>
+  <!-- Replace the src URL below with any webcam embed you prefer. This one uses a YouTube live feed of Times Square -->
+  <iframe src="https://www.youtube.com/embed/rnXjJl_Rzy4" width="640" height="360" allowfullscreen></iframe>
+
+  <!-- Newsletter -->
+  <h2>Subscribe to our newsletter</h2>
+  <form id="subscribe-form">
+    <input type="email" id="email" placeholder="Your email" required>
+    <button type="submit">Subscribe</button>
+  </form>
+  <script>
+    document.getElementById('subscribe-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const res = await fetch('/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        alert('Thank you for subscribing!');
+      } else {
+        alert('Subscription failed');
+      }
+    });
+  </script>
+
+  <!-- Age verification -->
+  <h2>Restricted content</h2>
+  <form id="age-form">
+    <input type="number" id="age" min="0" placeholder="Enter your age" required>
+    <button type="submit">Enter</button>
+  </form>
+  <script>
+    document.getElementById('age-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const age = document.getElementById('age').value;
+      const res = await fetch('/age-check?age=' + encodeURIComponent(age));
+      if (res.ok) {
+        alert('Access granted');
+      } else {
+        alert('You must be 18+');
+      }
+    });
+  </script>
+
+  <!-- Murph Miles Section (Web3 loyalty program) -->
+  <h2>Murph Miles</h2>
+  <p>Connect your wallet to earn Murph Miles for interacting with the site!</p>
+  <button id="connect-wallet">Connect Wallet</button>
+  <div id="wallet-address" style="margin-top: 0.5rem;"></div>
+  <!-- Include ethers.js from a public CDN for wallet connectivity -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <script>
+    document.getElementById('connect-wallet').addEventListener('click', async function() {
+      // Check if the browser has a Web3 provider (e.g. MetaMask)
+      if (typeof window.ethereum !== 'undefined') {
+        // Create a provider instance and request access to accounts
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        try {
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const address = await signer.getAddress();
+          // Display the connected wallet address on the page
+          document.getElementById('wallet-address').textContent = 'Connected: ' + address;
+          // Optional: send the address to the backend to award loyalty points
+          await fetch('/murph-miles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address })
+          });
+        } catch (err) {
+          console.error(err);
+          alert('Wallet connection failed. Please try again.');
+        }
+      } else {
+        alert('No Web3 wallet detected. Please install MetaMask or another wallet.');
+      }
+    });
+  </script>
+
+</body>
+</html>
