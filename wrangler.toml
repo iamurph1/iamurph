@@ -1,0 +1,7 @@
+name = "iamurph-worker"
+main = "src/index.js"
+account_id = "YOUR_ACCOUNT_ID"
+compatibility_date = "2025-09-24"
+
+[env.production]
+route = "iamurph.com/*"
