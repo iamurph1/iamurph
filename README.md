@@ -18,7 +18,7 @@ Pages functions live in the `functions/` directory.
 - `murph-miles.js` awards Murph Miles to connected wallets via Web3 and can store points in D1 or interact with a smart contract.
 - `ai-chat.js` demonstrates how to call Workers AI via REST API to build AI endpoints; it requires an `AI_API_TOKEN` secret and your `CLOUDFLARE_ACCOUNT_ID`.
 
-## Deployment
+## Deployment.
 
 - Add the following secrets in your GitHub repository settings under **Secrets and variables → Actions**:
   - `CLOUDFLARE_API_TOKEN` – API token with Pages edit permissions.
