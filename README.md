@@ -1,6 +1,6 @@
 # Cloudflare Pages Template
 
-This repository contains a template to create a dynamic site on Cloudflare Pages using Pages Functions.
+This repository contains a template to create a dynamic site on Cloudflare Pages using Pages Functions..
 
 ## Static site content
 
